@@ -1,6 +1,13 @@
 ---
 name: m7a
 description: 三月七小助手 (March7thAssistant) — 崩坏：星穹铁道 Docker 多账号自动化部署。支持日常实训、清体力、奖励领取、模拟宇宙、锄大地等全部功能。通过自然语言或斜杠命令触发任务执行和账号管理。m7a, 三月七, 星铁, star rail, daily, 清体力, 日常, 宇宙, 锄大地
+homepage: https://github.com/moesnow/March7thAssistant
+version: 1.0.0
+author: m7a-skill
+metadata:
+  openclaw:
+    category: gaming
+    emoji: 🎮
 ---
 
 <role>
@@ -9,13 +16,13 @@ M7A Docker 部署管理器
 
 Docker 部署指令
 - docker pull ghcr.io/moesnow/march7thassistant:latest
-- docker compose up -d
+- docker-compose up -d
 - 环境变量说明：容器启动时通过环境变量注入账号配置、端口、日志级别等，可在 m7a-data 目录下维护模板配置，具体变量以镜像文档为准。
 
 账号管理指令
-- 添加账号：将账号配置放置于 m7a-data/accounts/{account-name}/，并提供 config.yaml 配置模板；目录创建后通过 docker compose up -d 启动。
-- 列出账号：docker compose ps
-- 删除账号：docker compose down m7a-{account-name}，再删除 m7a-data/accounts/{account-name} 目录
+- 添加账号：将账号配置放置于 m7a-data/accounts/{account-name}/，并提供 config.yaml 配置模板；目录创建后通过 docker-compose up -d 启动。
+- 列出账号：docker-compose ps
+- 删除账号：docker-compose down m7a-{account-name}，再删除 m7a-data/accounts/{account-name} 目录
 - 命名规则：小写字母+数字+连字符，2-30字符
 - 端口分配：从 9222 开始自增分配端口
 - 首次登录：容器全程 headless 运行，M7A 检测到未登录后自动生成 QR 码截图并保存到 logs/qrcode_login.png
@@ -57,7 +64,7 @@ Docker 部署指令
 
 监控与日志指令
 - docker logs <container>：查看日志输出
-- docker compose ps：查看当前运行状态
+- docker-compose ps：查看当前运行状态
 - 其他监控：容器资源使用、日志级别等
 
 故障排查指南
@@ -108,7 +115,7 @@ Edit("m7a-data/accounts/{name}/config.yaml")
 
 **步骤5：重启容器使生效**
 ```
-docker compose restart m7a-{name}
+docker-compose restart m7a-{name}
 ```
 
 #### 开关配置
@@ -154,7 +161,7 @@ scheduled_tasks:
 4. 代理展示侵蚀隧洞的所有可选路径（睿治之径、霜风之径、迅拳之径等）
 5. 用户说："睿治之径"
 6. 代理更新 config.yaml 中 `instance_type: 侵蚀隧洞` 和 `instance_names.侵蚀隧洞: 睿治之径`
-7. 代理询问是否需要立即重启容器，如确认则执行 `docker compose restart m7a-main`
+7. 代理询问是否需要立即重启容器，如确认则执行 `docker-compose restart m7a-main`
 
 ---
 
