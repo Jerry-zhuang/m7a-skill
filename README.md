@@ -129,14 +129,16 @@ rm -rf m7a-data/accounts/{account-name}
 
 ## 首次登录
 
-1. 启动容器后，系统会自动打开非 headless 浏览器
-2. 浏览器显示崩坏：星穹铁道登录 QR 码
-3. 如果配置了 Telegram 通知，二维码图片会推送到你的手机
-4. 用手机游戏客户端扫描 QR 码完成登录
-5. 登录成功后容器自动切换为 headless 模式，后续运行不再弹窗
-6. 之后所有任务在后台静默执行
+首次登录无需配置任何通知推送，全程在 opencode chat 中完成。
 
-> 收不到 QR 码？检查 `tg_bot_token` 和 `tg_user_id` 是否配置正确。
+1. 容器以 **headless 模式**启动，不弹任何窗口
+2. M7A 检测到未登录状态，自动在云游戏页面生成 QR 码
+3. QR 码截图自动保存到 `m7a-data/accounts/{name}/logs/qrcode_login.png`
+4. opencode 代理检测到该文件后，直接将二维码图片发送给你
+5. 你用手机游戏客户端扫描 QR 码完成登录
+6. 扫码成功后，容器继续 headless 运行，所有任务在后台静默执行
+
+> QR 码有效期内未扫码？M7A 会自动刷新过期二维码，重新生成到 `qrcode_login.png`。
 
 ---
 
@@ -178,12 +180,15 @@ docker logs m7a-{name}    # 查看启动日志
 
 常见原因：YAML 缩进错误、`tg_bot_token` 无效、文件路径不匹配。
 
-### QR 码未推送
+### QR 码未生成
 
-- 确认 `notify_enable: true` 和 `notify_type: tg` 已配置
-- 确认 `tg_bot_token` 和 `tg_user_id` 填写正确
-- 首次启动时观察容器日志是否有推送相关输出：`docker logs m7a-{name}`
-- 备选方案：通过 VNC 或直接查看容器浏览器界面扫码（需额外配置）
+登录不需要配置通知推送，QR 码会直接保存到文件。如果未收到二维码：
+
+- 检查文件是否存在：`ls -la m7a-data/accounts/{name}/logs/qrcode_login.png`
+- 查看容器日志：`docker logs m7a-{name}` — 确认容器已正常启动并进入登录流程
+- 确认 `config.yaml` 中 `cloud_game_enable: true` 和 `browser_headless_enable: true` 已设置
+- 等待几秒后重新检查文件，M7A 可能需要时间加载云游戏页面
+- 如果二维码过期，M7A 会自动刷新并重新保存，稍后重试即可
 
 ---
 

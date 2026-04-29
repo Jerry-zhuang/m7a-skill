@@ -18,7 +18,15 @@ Docker 部署指令
 - 删除账号：docker compose down m7a-{account-name}，再删除 m7a-data/accounts/{account-name} 目录
 - 命名规则：小写字母+数字+连字符，2-30字符
 - 端口分配：从 9222 开始自增分配端口
-- 首次登录：首次登录时非 headless，系统推送 QR 码，通过扫描完成登录后切换回 headless 模式
+- 首次登录：容器全程 headless 运行，M7A 检测到未登录后自动生成 QR 码截图并保存到 logs/qrcode_login.png
+- 首次登录流程：
+  1. 启动容器（headless 模式）
+  2. 等待 M7A 检测到未登录状态 → 自动生成 QR 码
+  3. QR 码截图保存在: `m7a-data/accounts/{name}/logs/qrcode_login.png`
+  4. 使用 `background_output` 或 Read 工具读取该图片文件
+  5. 将 QR 码图片展示给用户扫码
+  6. 扫码完成后，容器继续 headless 执行任务
+  - 注意：无需配置通知推送，无需切换到非 headless 模式
 
 中英文自然语言到 M7A CLI 命令映射表
 | 自然语言 | CLI 命令 |
@@ -54,7 +62,8 @@ Docker 部署指令
 
 故障排查指南
 - 容器启动失败：检查镜像版本、环境变量、挂载路径是否正确
-- QR 码未推送：检查通知服务是否可达、推送配置是否正确
+- QR 码未生成：检查 `m7a-data/accounts/{name}/logs/qrcode_login.png` 是否存在；用 `docker logs m7a-{name}` 查看容器是否已启动并进入登录流程
+- 二维码过期：M7A 会自动刷新过期二维码并重新保存到 `qrcode_login.png`，重新读取即可
 - 任务执行失败：查看日志、手动触发 python main.py <task> 进行重试
 - 浏览器崩溃：确保 shm_size 设置为 1g，在浏览器相关任务中启用共享内存
 
