@@ -1,0 +1,49 @@
+# March7thAssistant 最小 Docker 运行配置 — 完整选项见 https://github.com/moesnow/March7thAssistant/blob/main/assets/config/config.example.yaml
+
+locales: zh_CN
+ui_language: auto
+log_level: INFO
+log_overlay_enable: false    # Docker 无窗口
+check_update: false          # Docker 镜像由外部管理更新
+pause_after_success: false
+exit_after_failure: true
+after_finish: Loop           # 持续运行模式
+
+# 云游戏模式
+cloud_game_enable: true
+browser_type: integrated
+browser_headless_enable: true
+browser_persistent_enable: true
+browser_download_use_mirror: true
+cloud_game_fullscreen_enable: true
+
+# 奖励领取（全部启用）
+reward_enable: true
+reward_dispatch_enable: true   # 领取委托奖励
+reward_mail_enable: true        # 领取邮件奖励
+reward_assist_enable: true      # 领取支援奖励
+reward_quest_enable: true       # 领取每日实训奖励
+reward_srpass_enable: true      # 领取无名勋礼奖励
+reward_redemption_code_enable: true # 领取兑换码奖励
+reward_achievement_enable: false
+reward_message_enable: false
+
+# 每日及体力
+daily_enable: true
+break_down_level_four_relicset: false
+
+# 定时任务（示例格式）
+# scheduled_tasks:
+#   - name: 每日
+#     trigger_type: cron
+#     cron: "0 10 * * *"
+#     tasks: [daily]
+
+# 通知推送（填入你的机器人配置）
+# notify_enable: true
+# notify_type: tg
+# tg_bot_token: YOUR_BOT_TOKEN
+# tg_user_id: YOUR_USER_ID
+# notify_on_start: false
+# notify_on_finish: true
+# notify_on_fail: true

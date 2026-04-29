@@ -1,0 +1,18 @@
+# M7A Skill - Runtime data (git ignore)
+
+# Account-specific runtime data
+m7a-data/accounts/*/logs/
+m7a-data/accounts/*/browser-profile/
+m7a-data/accounts/*/config.yaml
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+.venv/
+venv/
+
+# macOS
+.DS_Store

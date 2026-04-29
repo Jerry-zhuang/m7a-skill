@@ -1,0 +1,98 @@
+# =============================================================================
+# March7thAssistant — 多账号 Docker 编排配置
+# =============================================================================
+# 架构说明：
+#   每个游戏账号运行一个独立的 March7thAssistant 容器。容器之间通过
+#   Docker 网络隔离，共享主机文件系统下的持久化数据目录。
+#
+# 端口分配策略：
+#   每个容器暴露一个 Chrome DevTools Protocol (CDP) debug 端口，
+#   用于远程调试浏览器实例。端口从 9222 开始依次递增：
+#     - 账号 1 (main):  9222
+#     - 账号 2 (alt-1): 9223
+#     - 账号 3 (alt-2): 9224
+#     - ...
+#
+# 添加新账号步骤：
+#   1. 在 m7a-data/accounts/{account-name}/ 下创建 config.yaml（配置参考文档）
+#   2. 取消下方示例服务的注释，复制一份，替换所有 {account-name}
+#   3. 将 container_name 和端口号依次递增
+#   4. 执行 docker compose up -d 启动
+#
+# 数据目录结构：
+#   ./m7a-data/accounts/{name}/
+#     ├── config.yaml        # 账号配置文件（必需）
+#     ├── logs/              # 运行日志（自动创建）
+#     └── browser-profile/   # Chrome 浏览器持久化 Profile（自动创建）
+#
+# 注意：
+#   - 首次启动前需确保对应 config.yaml 已就位
+#   - 所有容器使用 bridge 网络模式（默认），无需额外网络配置
+#   - 日志按容器独立存储，便于问题排查
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # 示例服务 — 取消注释并修改 {account-name} 后即可激活
+  # ---------------------------------------------------------------------------
+  # 账号名称建议使用字母、数字和连字符，例如: main, alt-1, alt-2
+  #
+  #  m7a-{account-name}:
+  #    image: ghcr.io/moesnow/march7thassistant:latest
+  #    shm_size: 1g
+  #    restart: unless-stopped
+  #    container_name: m7a-{account-name}
+  #    environment:
+  #      - MARCH7TH_CLOUD_GAME_ENABLE=true
+  #      - MARCH7TH_BROWSER_HEADLESS_ENABLE=true
+  #      - MARCH7TH_DOCKER_STARTED=true
+  #      - TZ=Asia/Shanghai
+  #    volumes:
+  #      - ./m7a-data/accounts/{account-name}/config.yaml:/m7a/config.yaml
+  #      - ./m7a-data/accounts/{account-name}/logs:/m7a/logs
+  #      - ./m7a-data/accounts/{account-name}/browser-profile:/m7a/3rdparty/WebBrowser/UserProfile
+  #    ports:
+  #      - "{debug-port}:9222"
+  #    mem_limit: 2g
+
+  # ---------------------------------------------------------------------------
+  # 示例: main 账号（默认使用 9222 端口）
+  # ---------------------------------------------------------------------------
+  # m7a-main:
+  #   image: ghcr.io/moesnow/march7thassistant:latest
+  #   shm_size: 1g
+  #   restart: unless-stopped
+  #   container_name: m7a-main
+  #   environment:
+  #     - MARCH7TH_CLOUD_GAME_ENABLE=true
+  #     - MARCH7TH_BROWSER_HEADLESS_ENABLE=true
+  #     - MARCH7TH_DOCKER_STARTED=true
+  #     - TZ=Asia/Shanghai
+  #   volumes:
+  #     - ./m7a-data/accounts/main/config.yaml:/m7a/config.yaml
+  #     - ./m7a-data/accounts/main/logs:/m7a/logs
+  #     - ./m7a-data/accounts/main/browser-profile:/m7a/3rdparty/WebBrowser/UserProfile
+  #   ports:
+  #     - "9222:9222"
+  #   mem_limit: 2g
+
+  # ---------------------------------------------------------------------------
+  # 示例: 第二个账号（使用 9223 端口）
+  # ---------------------------------------------------------------------------
+  # m7a-alt-1:
+  #   image: ghcr.io/moesnow/march7thassistant:latest
+  #   shm_size: 1g
+  #   restart: unless-stopped
+  #   container_name: m7a-alt-1
+  #   environment:
+  #     - MARCH7TH_CLOUD_GAME_ENABLE=true
+  #     - MARCH7TH_BROWSER_HEADLESS_ENABLE=true
+  #     - MARCH7TH_DOCKER_STARTED=true
+  #     - TZ=Asia/Shanghai
+  #   volumes:
+  #     - ./m7a-data/accounts/alt-1/config.yaml:/m7a/config.yaml
+  #     - ./m7a-data/accounts/alt-1/logs:/m7a/logs
+  #     - ./m7a-data/accounts/alt-1/browser-profile:/m7a/3rdparty/WebBrowser/UserProfile
+  #   ports:
+  #     - "9223:9222"
+  #   mem_limit: 2g

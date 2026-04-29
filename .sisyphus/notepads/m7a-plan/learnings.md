@@ -1,0 +1,4 @@
+- Created .opencode/skills/m7a/SKILL.md with frontmatter and task mappings.
+- YAML frontmatter validated via Python YAML parser: name = m7a.
+- Verified multiple content requirements (docker,账号, main.py occurrences) by inspection during patch.
+- Next steps: populate issues.md and decisions.md as planning evolves.
