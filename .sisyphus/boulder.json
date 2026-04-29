@@ -36,6 +36,23 @@
       "agent": "Sisyphus-Junior",
       "category": "deep",
       "updated_at": "2026-04-29T09:42:37.980Z"
+    },
+    "todo:5": {
+      "task_key": "todo:5",
+      "task_label": "5",
+      "task_title": "README.md — Project Usage Documentation",
+      "session_id": "ses_227603333ffeJhdW1zNIZdwKvC",
+      "agent": "Sisyphus-Junior",
+      "category": "writing",
+      "updated_at": "2026-04-29T09:44:52.040Z"
+    },
+    "final-wave:f1": {
+      "task_key": "final-wave:f1",
+      "task_label": "F1",
+      "task_title": "**Plan Compliance Audit** — `oracle`",
+      "session_id": "ses_2275ee03effezU9Iqt5w5CODve",
+      "agent": "oracle",
+      "updated_at": "2026-04-29T09:46:57.931Z"
     }
   }
 }

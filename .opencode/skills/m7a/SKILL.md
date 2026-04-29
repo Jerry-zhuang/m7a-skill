@@ -34,6 +34,8 @@ Docker 部署指令
 | 虚构叙事/purefiction | python main.py purefiction |
 | 末日幻影/apocalyptic | python main.py apocalyptic |
 | 兑换码/redemption | python main.py redemption |
+| 奖励/reward | python main.py daily（包含在每日实训中） |
+| 更新游戏/game_update | python main.py game_update |
 - CLI 调用示例：通过 docker exec m7a-{name} python main.py <task> 触发任务
 - 备注：所有任务均通过容器内的 python main.py 派发
 

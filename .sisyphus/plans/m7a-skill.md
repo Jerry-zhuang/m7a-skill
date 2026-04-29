@@ -609,7 +609,7 @@ Max Concurrent: 4 (Wave 1)
   - Files: `docker-compose.yml`
   - Pre-commit: `python3 -c "import yaml; yaml.safe_load(open('docker-compose.yml'))"`
 
-- [ ] 5. README.md — Project Usage Documentation
+- [x] 5. README.md — Project Usage Documentation
 
   **What to do**:
   - 创建 `README.md` — 项目使用说明
@@ -703,19 +703,19 @@ Max Concurrent: 4 (Wave 1)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE. Present consolidated results to user and get explicit "okay" before completing.
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `oracle`
   Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, grep content). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. **File Quality Review** — `unspecified-high`
+- [x] F2. **File Quality Review** — `unspecified-high`
   Review all created files for: invalid YAML syntax, missing required fields, inconsistent references (wrong paths, wrong image names, wrong port numbers), placeholder text left in, over-engineered sections (500-line config, notification wizard, monitoring dashboard), poor markdown formatting. Check SKILL.md frontmatter validates. Check docker-compose.yml parses as valid compose spec.
   Output: `YAML [N/N valid] | References [N/N consistent] | Placeholders [0 found] | Slop [0 found] | VERDICT`
 
-- [ ] F3. **Real Manual QA** — `unspecified-high`
+- [x] F3. **Real Manual QA** — `unspecified-high`
   Start from clean state. Execute EVERY QA scenario from EVERY task — follow exact steps, capture evidence. Test cross-task integration: do SKILL.md instructions match docker-compose.yml service names? Do config variable names match between template and compose env vars? Do port numbers in compose match skill instructions? Test edge cases: account names with special characters, missing Docker, invalid config.
   Output: `Scenarios [N/N pass] | Integration [N/N] | Edge Cases [N tested] | VERDICT`
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   For each task: read "What to do", read actual file content. Verify 1:1 — everything in spec was built (no missing), nothing beyond spec was built (no creep). Check "Must NOT do" compliance: no Python/Shell scripts, no full 500-line config, no monitoring dashboard. Detect cross-task contamination. Flag unaccounted changes.
   Output: `Tasks [N/N compliant] | Contamination [CLEAN/N issues] | Unaccounted [CLEAN/N files] | VERDICT`
 
@@ -747,10 +747,10 @@ wc -l m7a-data/template/config.yaml  # Expected: < 80
 ```
 
 ### Final Checklist
-- [ ] All "Must Have" present
-- [ ] All "Must NOT Have" absent
-- [ ] SKILL.md frontmatter validates as YAML
-- [ ] docker-compose.yml parses as valid compose spec
-- [ ] Config template is minimal (< 80 lines)
-- [ ] No Python/Shell helper scripts created
-- [ ] No full config.example.yaml embedded
+- [x] All "Must Have" present
+- [x] All "Must NOT Have" absent
+- [x] SKILL.md frontmatter validates as YAML
+- [x] docker-compose.yml parses as valid compose spec
+- [x] Config template is minimal (< 80 lines)
+- [x] No Python/Shell helper scripts created
+- [x] No full config.example.yaml embedded
