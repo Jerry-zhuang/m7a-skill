@@ -17,7 +17,7 @@
 #   1. 在 m7a-data/accounts/{account-name}/ 下创建 config.yaml（配置参考文档）
 #   2. 取消下方示例服务的注释，复制一份，替换所有 {account-name}
 #   3. 将 container_name 和端口号依次递增
-#   4. 执行 docker compose up -d 启动
+#   4. 执行 docker compose up -d 启动（Windows 用户可用 Docker Desktop）
 #
 # 数据目录结构：
 #   ./m7a-data/accounts/{name}/

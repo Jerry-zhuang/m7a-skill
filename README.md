@@ -1,6 +1,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License">
   <img src="https://img.shields.io/badge/OpenClaw-Hermes-opencode-Claude_Code-8A2BE2" alt="Multi-Agent">
+  <img src="https://img.shields.io/badge/Windows-WSL_|_PowerShell-0078D4?logo=windows" alt="Windows">
+  <img src="https://img.shields.io/badge/macOS-000000?logo=apple" alt="macOS">
+  <img src="https://img.shields.io/badge/Linux-FCC624?logo=linux" alt="Linux">
   <img src="https://img.shields.io/badge/Docker-20.10%2B-2496ED?logo=docker" alt="Docker">
   <img src="https://img.shields.io/github/stars/Jerry-zhuang/m7a-skill?style=social" alt="GitHub Stars">
 </p>
@@ -37,10 +40,17 @@
 ### 🚀 终端一键安装（全平台自动检测）
 
 ```bash
+# Linux / macOS / Windows WSL
 bash <(curl -fsSL https://raw.githubusercontent.com/Jerry-zhuang/m7a-skill/main/install.sh)
 ```
 
-脚本会自动检测当前环境中已安装的 AI 代理，将 skill 安装到对应位置。
+```powershell
+# Windows PowerShell（管理员）
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+irm https://raw.githubusercontent.com/Jerry-zhuang/m7a-skill/main/install.ps1 | iex
+```
+
+脚本会自动检测当前环境中已安装的 AI 代理和操作系统，将 skill 安装到对应位置。
 
 ### 🦞 OpenClaw（龙虾）
 
@@ -81,10 +91,54 @@ ln -sf "$(pwd)/skills/m7a" .claude/skills/m7a
 
 ---
 
+## 跨平台支持
+
+本项目支持 **Windows、macOS、Linux** 三大平台。
+
+| 平台 | 安装方式 | Docker 方案 |
+|------|----------|-------------|
+| **Linux** | `install.sh`（bash） | Docker Engine 直接安装 |
+| **macOS** | `install.sh`（bash） | Docker Desktop for Mac |
+| **Windows (WSL)** | `install.sh`（在 WSL 终端中运行） | Docker Desktop 集成 WSL |
+| **Windows (原生)** | `install.ps1`（PowerShell） | Docker Desktop for Windows |
+
+### 🐧 Linux / 🍎 macOS / 🪟 WSL — install.sh
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/Jerry-zhuang/m7a-skill/main/install.sh)
+```
+
+脚本会自动检测操作系统和已安装的 AI 代理，将 skill 安装到正确位置。
+
+### 🪟 Windows 原生 — PowerShell
+
+以 **管理员身份** 打开 PowerShell，执行：
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+irm https://raw.githubusercontent.com/Jerry-zhuang/m7a-skill/main/install.ps1 | iex
+```
+
+> **注意**: Windows symlink 需要管理员权限或开启开发者模式。
+> 如果 symlink 失败，脚本会自动降级为文件复制。
+
+### 🪟 Windows WSL 2（推荐）
+
+WSL 用户直接在 WSL 终端中运行 `install.sh` 即可。确保 Docker Desktop 已开启 WSL 集成：
+
+1. 安装 [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
+2. 设置 → Resources → WSL Integration → 启用你的 WSL 发行版
+3. 在 WSL 终端中运行 `install.sh`
+
+---
+
 ## 前置条件
 
-- Docker Engine >= 20.10
-- Docker Compose V2（`docker-compose` 命令，非旧版 `docker-compose`）
+- **Docker**
+  - Linux: Docker Engine >= 20.10
+  - macOS: [Docker Desktop for Mac](https://docs.docker.com/desktop/install/mac-install/)
+  - Windows: [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)（推荐开启 WSL 集成）
+- **Docker Compose V2**（`docker compose` 命令）
 - 足够的磁盘空间存放浏览器 Profile 和日志（每个星铁账号约 500MB+）
 
 ---
@@ -106,7 +160,7 @@ cp -r m7a-data/template m7a-data/accounts/main
 取消 `docker-compose.yml` 中 `m7a-main` 服务的注释，然后：
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 3. 登录
@@ -134,7 +188,7 @@ cp m7a-data/template/config.yaml m7a-data/accounts/alt-1/
 #    - volumes 路径指向 m7a-data/accounts/alt-1/
 
 # 4. 启动
-docker-compose up -d
+docker compose up -d
 ```
 
 账号命名规则：小写字母 + 数字 + 连字符，2-30 个字符。
@@ -142,13 +196,13 @@ docker-compose up -d
 ### 列出账号
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ### 删除账号
 
 ```bash
-docker-compose down m7a-{account-name}
+docker compose down m7a-{account-name}
 rm -rf m7a-data/accounts/{account-name}
 ```
 
@@ -264,7 +318,8 @@ docker logs m7a-{name}    # 查看启动日志
 m7a-skill/
 ├── skills/m7a/SKILL.md              # 通用 Skill 定义（适配所有 AI 代理）
 ├── docker-compose.yml               # Docker 编排配置
-├── install.sh                       # 一键安装脚本
+├── install.sh                       # 一键安装脚本（Linux / macOS / WSL）
+├── install.ps1                      # 一键安装脚本（Windows PowerShell）
 ├── m7a-data/
 │   ├── template/config.yaml         # 最小配置模板
 │   └── accounts/                    # 各账号配置目录（按需创建）

@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # =============================================================================
-# M7A Skill — 一键安装脚本（支持 OpenClaw / Hermes / opencode / Claude Code）
+# M7A Skill — 一键安装脚本（支持 Linux / macOS / Windows WSL）
 # =============================================================================
 # 用法:
 #   bash <(curl -fsSL https://raw.githubusercontent.com/Jerry-zhuang/m7a-skill/main/install.sh)
 #
 # 自动检测当前环境中的 AI 编码代理，将 skill 安装到正确位置。
+# 支持 Linux、macOS、Windows (WSL/Git Bash/MSYS2)。
+# Windows 用户也可使用 install.ps1（PowerShell）。
 # =============================================================================
 
 set -euo pipefail
@@ -13,20 +15,47 @@ set -euo pipefail
 REPO_URL="https://github.com/Jerry-zhuang/m7a-skill.git"
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-NC='\033[0m'
-
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 log_info()  { echo -e "${CYAN}[INFO]${NC}  $1"; }
 log_ok()    { echo -e "${GREEN}[OK]${NC}    $1"; }
 log_warn()  { echo -e "${YELLOW}[WARN]${NC}  $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
-# -------------------------------------------------------------------------
-# 安装 skill 到目标目录（创建 symlink）
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# OS 检测
+# ---------------------------------------------------------------------------
+detect_os() {
+  case "$(uname -s)" in
+    Linux)
+      if grep -qi microsoft /proc/version 2>/dev/null; then
+        echo "wsl"
+      else
+        echo "linux"
+      fi
+      ;;
+    Darwin) echo "macos" ;;
+    MINGW*|MSYS*|CYGWIN*) echo "windows" ;;
+    *) echo "unknown" ;;
+  esac
+}
+
+OS="$(detect_os)"
+
+# ---------------------------------------------------------------------------
+# 路径工具：$HOME 在 Git Bash 下可能不是标准格式
+# ---------------------------------------------------------------------------
+home_dir() {
+  case "$OS" in
+    windows) echo "${USERPROFILE:-$HOME}" ;;
+    *)       echo "$HOME" ;;
+  esac
+}
+
+HOME_DIR="$(home_dir)"
+
+# ---------------------------------------------------------------------------
+# 安装 skill 到目标目录
+# ---------------------------------------------------------------------------
 install_skill() {
   local platform="$1"
   local target_dir="$2"
@@ -39,16 +68,25 @@ install_skill() {
     return 0
   fi
 
-  ln -sf "$source_path" "$target_dir"
-  log_ok "${platform}: skill 已安装 → ${target_dir}"
+  # Symlink 尝试，失败则降级为 copy
+  if ln -sf "$source_path" "$target_dir" 2>/dev/null; then
+    log_ok "${platform}: skill 已安装 → ${target_dir}"
+  else
+    cp -r "$source_path" "$target_dir"
+    log_ok "${platform}: skill 已安装 (copy fallback) → ${target_dir}"
+  fi
 }
 
-# -------------------------------------------------------------------------
-# 检测并安装各平台
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# 检测并安装各平台 AI 代理
+# ---------------------------------------------------------------------------
 install_openclaw() {
-  local dir="${OPENCLAW_SKILLS_DIR:-$HOME/.openclaw/skills/m7a}"
-  if [ -n "${OPENCLAW_SKILLS_DIR:-}" ] || [ -d "$HOME/.openclaw/skills" ]; then
+  local dir
+  case "$OS" in
+    windows) dir="${HOME_DIR}\\.openclaw\\skills\\m7a" ;;
+    *)       dir="${OPENCLAW_SKILLS_DIR:-${HOME_DIR}/.openclaw/skills/m7a}" ;;
+  esac
+  if [ -n "${OPENCLAW_SKILLS_DIR:-}" ] || [ -d "$(dirname "$dir")" ]; then
     install_skill "OpenClaw (龙虾)" "$dir"
     return 0
   fi
@@ -56,8 +94,12 @@ install_openclaw() {
 }
 
 install_hermes() {
-  local dir="${HERMES_SKILLS_DIR:-$HOME/.hermes/skills/m7a}"
-  if [ -n "${HERMES_SKILLS_DIR:-}" ] || [ -d "$HOME/.hermes/skills" ]; then
+  local dir
+  case "$OS" in
+    windows) dir="${HOME_DIR}\\.hermes\\skills\\m7a" ;;
+    *)       dir="${HERMES_SKILLS_DIR:-${HOME_DIR}/.hermes/skills/m7a}" ;;
+  esac
+  if [ -n "${HERMES_SKILLS_DIR:-}" ] || [ -d "$(dirname "$dir")" ]; then
     install_skill "Hermes (爱马仕)" "$dir"
     return 0
   fi
@@ -74,12 +116,11 @@ install_opencode() {
 }
 
 install_claudecode() {
-  local dir="$HOME/.claude/skills/m7a"
-  if [ -d "$HOME/.claude/skills" ]; then
+  local dir="${HOME_DIR}/.claude/skills/m7a"
+  if [ -d "$(dirname "$dir")" ]; then
     install_skill "Claude Code" "$dir"
     return 0
   fi
-  # 也检查项目级 .claude/skills
   local project_dir="./.claude/skills/m7a"
   if [ -d "./.claude/skills" ]; then
     install_skill "Claude Code (project)" "$project_dir"
@@ -88,37 +129,41 @@ install_claudecode() {
   return 1
 }
 
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 # 前置检查
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 check_prerequisites() {
+  log_info "系统: ${OS}"
   log_info "检查前置依赖..."
-  local has_docker=false
 
+  local has_docker=false
   if command -v docker &>/dev/null; then
-    log_ok "Docker $(docker --version | cut -d' ' -f3 | tr -d ',')"
+    log_ok "Docker $(docker --version 2>/dev/null | cut -d' ' -f3 | tr -d ',')"
     has_docker=true
   else
     log_warn "Docker 未安装。M7A 需要 Docker Engine >= 20.10。"
   fi
 
   if docker compose version &>/dev/null; then
-    log_ok "Docker Compose $(docker compose version | awk '{print $4}' | tr -d ',')"
+    log_ok "Docker Compose $(docker compose version 2>/dev/null | awk '{print $4}' | tr -d ',')"
+  elif docker-compose --version &>/dev/null; then
+    log_ok "Docker Compose (legacy) $(docker-compose --version 2>/dev/null | awk '{print $3}' | tr -d ',')"
   else
     log_warn "Docker Compose V2 未安装。"
   fi
 
   echo ""
-  $has_docker || log_warn "请先安装 Docker: https://docs.docker.com/engine/install/"
-  echo ""
+  if ! $has_docker; then
+    log_warn "安装 Docker: https://docs.docker.com/engine/install/"
+    echo ""
+  fi
 }
 
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 # 创建账号数据目录
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 create_data_dirs() {
   local base_dir="$1"
-
   log_info "创建账号数据目录结构..."
 
   mkdir -p "$base_dir/m7a-data/template"
@@ -158,9 +203,9 @@ YAMLEOF
   echo ""
 }
 
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 # 后续步骤
-# -------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 print_next_steps() {
   echo ""
   echo -e "${CYAN}========================================"
@@ -168,6 +213,7 @@ print_next_steps() {
   echo -e "========================================${NC}"
   echo ""
   echo -e "  Skill 位置: ${PROJECT_DIR}/skills/m7a/SKILL.md"
+  echo -e "  系统: ${OS}"
   echo ""
   echo -e "  ${CYAN}快速开始：${NC}"
   echo ""
@@ -202,7 +248,15 @@ print_manual_hints() {
   echo "    ln -sf ${PROJECT_DIR}/skills/m7a .opencode/skills/m7a"
   echo ""
   echo -e "  ${CYAN}Claude Code:${NC}"
-  echo "    ln -sf ${PROJECT_DIR}/skills/m7a ~/.claude/skills/m7a"
+  case "$OS" in
+    windows) echo "    mklink /D %USERPROFILE%\\.claude\\skills\\m7a ${PROJECT_DIR}\\skills\\m7a" ;;
+    *)       echo "    ln -sf ${PROJECT_DIR}/skills/m7a ~/.claude/skills/m7a" ;;
+  esac
+  echo ""
+  echo -e "  ${YELLOW}Windows 用户也可使用 PowerShell 脚本:${NC}"
+  echo "    https://raw.githubusercontent.com/Jerry-zhuang/m7a-skill/main/install.ps1"
+  echo ""
+  echo -e "  ${YELLOW}WSL 用户直接在 WSL 终端中运行此脚本即可。${NC}"
   echo ""
 }
 
@@ -211,20 +265,21 @@ print_manual_hints() {
 # =============================================================================
 main() {
   echo ""
-  echo -e "${CYAN}╔══════════════════════════════════════╗"
-  echo -e "║    🎮 M7A Skill 一键安装脚本        ║"
-  echo -e "║    适配: OpenClaw / Hermes / opencode / Claude Code"
-  echo -e "╚══════════════════════════════════════╝${NC}"
+  echo -e "${CYAN}╔══════════════════════════════════════════╗"
+  echo -e "║      🎮 M7A Skill 一键安装脚本          ║"
+  echo -e "║  崩坏：星穹铁道 · Docker 多账号自动部署   ║"
+  echo -e "║  适配: OpenClaw / Hermes / opencode / Claude Code"
+  echo -e "║  支持: Linux / macOS / Windows (WSL)     ║"
+  echo -e "╚══════════════════════════════════════════╝${NC}"
   echo ""
 
   check_prerequisites
   create_data_dirs "$PROJECT_DIR/"
 
   local installed=0
-
-  install_openclaw && installed=1 || true
-  install_hermes   && installed=1 || true
-  install_opencode && installed=1 || true
+  install_openclaw   && installed=1 || true
+  install_hermes     && installed=1 || true
+  install_opencode   && installed=1 || true
   install_claudecode && installed=1 || true
 
   if [ "$installed" -eq 1 ]; then
