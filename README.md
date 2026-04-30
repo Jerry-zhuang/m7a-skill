@@ -5,20 +5,21 @@
   <img src="https://img.shields.io/github/stars/Jerry-zhuang/m7a-skill?style=social" alt="GitHub Stars">
 </p>
 
-# M7A Skill — 三月七小助手 Docker 多账号自动部署
+# M7A Skill — 崩坏：星穹铁道 三月七小助手 Docker 多账号自动部署
 
-基于 [March7thAssistant](https://github.com/moesnow/March7thAssistant) 的 Docker 多账号部署方案，支持通过 OpenClaw / Hermes / opencode / Claude Code 等 AI 编码代理以自然语言触发任务执行和账号管理。每个游戏账号运行一个独立容器，互不干扰。
+> **崩坏：星穹铁道**（Honkai: Star Rail / 星穹铁道 / 星铁）全自动日常脚本 —
+> 基于 [March7thAssistant](https://github.com/moesnow/March7thAssistant)（三月七小助手）的 Docker 多账号部署方案。
+> 支持通过 OpenClaw / Hermes / opencode / Claude Code 等 AI 编码代理以自然语言触发任务执行和账号管理。
 
 ---
 
 ## 功能特性
 
-- **多账号云游戏** — 每个账号独立容器，支持 N 个账号并行管理
-- **全自动任务** — 日常实训、清体力、模拟宇宙、锄大地、混沌回忆等全自动执行
-- **Docker 部署** — 一键拉取镜像，Compose 编排，快速启停
-- **消息通知** — 支持 Telegram 等渠道推送任务结果和扫码登录
-- **定时调度** — 内置 cron 定时任务 + `after_finish: Loop` 循环模式
-- **自然语言触发** — 在 AI 代理中用中文描述任务，自动映射为 CLI 命令（支持 OpenClaw / Hermes / opencode / Claude Code）
+- **🎮 崩坏：星穹铁道 全自动任务** — 日常实训、清体力、模拟宇宙、锄大地、混沌回忆、虚构叙事、末日幻影等全部玩法自动执行
+- **📦 Docker 多账号部署** — 每个星铁账号运行独立 Docker 容器，互不干扰，支持 N 账号并行
+- **🤖 AI 代理触发** — 在 OpenClaw / Hermes / opencode / Claude Code 中用中文描述任务（如"清一下体力""打混沌回忆"），自动映射为 CLI 命令
+- **🔔 消息通知** — 支持 Telegram 等渠道推送任务结果和扫码登录
+- **⏰ 定时调度** — 内置 cron 定时任务 + `after_finish: Loop` 循环模式，全天候挂机
 
 ---
 
@@ -48,7 +49,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Jerry-zhuang/m7a-skill/main/
 openclaw skills add https://github.com/Jerry-zhuang/m7a-skill
 
 # 方式 B：在 OpenClaw 聊天框中粘贴此指令
-#   "请从 GitHub 安装 m7a skill，仓库地址是：
+#   "请从 GitHub 安装 m7a skill（崩坏星穹铁道自动部署），仓库地址是：
 #    https://github.com/Jerry-zhuang/m7a-skill"
 ```
 
@@ -84,7 +85,7 @@ ln -sf "$(pwd)/skills/m7a" .claude/skills/m7a
 
 - Docker Engine >= 20.10
 - Docker Compose V2（`docker-compose` 命令，非旧版 `docker-compose`）
-- 足够的磁盘空间存放浏览器 Profile 和日志（每个账号约 500MB+）
+- 足够的磁盘空间存放浏览器 Profile 和日志（每个星铁账号约 500MB+）
 
 ---
 
@@ -110,7 +111,7 @@ docker-compose up -d
 
 ### 3. 登录
 
-首次启动会弹出浏览器窗口显示 QR 码。如果配置了通知推送，二维码会自动推送到你的手机，扫码完成登录。之后容器会切换为 headless 模式自动运行。
+首次启动会弹出浏览器窗口显示 QR 码。如果配置了通知推送，二维码会自动推送到你的手机，打开 **崩坏：星穹铁道** 游戏扫码完成登录。之后容器会切换为 headless 模式自动运行。
 
 > 详细首次登录流程见下方"首次登录"章节。
 
@@ -153,23 +154,23 @@ rm -rf m7a-data/accounts/{account-name}
 
 ---
 
-## 任务触发
+## 任务触发（崩坏星穹铁道全自动脚本）
 
-在 AI 代理（OpenClaw / Hermes / opencode / Claude Code）中使用自然语言描述任务，系统会自动映射到容器内 CLI 命令并执行。
+在 AI 代理（OpenClaw / Hermes / opencode / Claude Code）中使用自然语言描述任务，系统会自动映射到容器内 CLI 命令并执行。支持 **崩坏：星穹铁道** 全部日常和周常玩法：
 
-| 你说 | 实际执行 |
+| 你说（自然语言） | 实际执行 |
 |---|---|
-| "今天日常做了吗" | `docker exec m7a-{name} python main.py daily` |
-| "清一下体力" | `docker exec m7a-{name} python main.py power` |
-| "跑一轮全部" | `docker exec m7a-{name} python main.py` |
-| "打模拟宇宙" | `docker exec m7a-{name} python main.py universe` |
-| "锄大地" | `docker exec m7a-{name} python main.py fight` |
+| "今天日常做了吗" / "做每日" | `docker exec m7a-{name} python main.py daily` |
+| "清一下体力" / "清体力" | `docker exec m7a-{name} python main.py power` |
+| "跑一轮全部" / "全自动" | `docker exec m7a-{name} python main.py` |
+| "打模拟宇宙" / "宇宙" | `docker exec m7a-{name} python main.py universe` |
+| "锄大地" / "锄地" | `docker exec m7a-{name} python main.py fight` |
 | "差分宇宙" | `docker exec m7a-{name} python main.py divergent` |
-| "货币战争" | `docker exec m7a-{name} python main.py currencywars` |
-| "打混沌回忆" | `docker exec m7a-{name} python main.py forgottenhall` |
+| "货币战争" / "金币" | `docker exec m7a-{name} python main.py currencywars` |
+| "打混沌回忆" / "深渊" | `docker exec m7a-{name} python main.py forgottenhall` |
 | "打虚构叙事" | `docker exec m7a-{name} python main.py purefiction` |
 | "打末日幻影" | `docker exec m7a-{name} python main.py apocalyptic` |
-| "兑换码发了没" | `docker exec m7a-{name} python main.py redemption` |
+| "兑换码发了没" / "领兑换码" | `docker exec m7a-{name} python main.py redemption` |
 
 完整的触发词表见 [SKILL.md](skills/m7a/SKILL.md)。所有 AI 代理共享同一份 SKILL.md，无需分别维护。
 
@@ -184,7 +185,7 @@ rm -rf m7a-data/accounts/{account-name}
 | `cloud_game_enable` | 是否启用云游戏模式 | `true` |
 | `browser_headless_enable` | 是否无头运行 | `true`（首次登录后） |
 | `after_finish` | 任务完成后行为 | `Loop`（持续循环） |
-| `daily_enable` | 每日实训 | `true` |
+| `daily_enable` | 每日实训（星铁日常） | `true` |
 | `notify_type` | 通知类型 (`tg`) | 按需配置 |
 | `scheduled_tasks` | 定时任务 | cron 表达式 |
 
@@ -197,11 +198,11 @@ rm -rf m7a-data/accounts/{account-name}
 首次登录无需配置任何通知推送，全程在 AI 代理聊天中完成。
 
 1. 容器以 **headless 模式**启动，不弹任何窗口
-2. M7A 检测到未登录状态，自动在云游戏页面生成 QR 码
+2. M7A 检测到 **崩坏：星穹铁道** 未登录状态，自动在云游戏页面生成 QR 码
 3. QR 码截图自动保存到 `m7a-data/accounts/{name}/logs/qrcode_login.png`
 4. AI 代理检测到该文件后，直接将二维码图片发送给你
-5. 你用手机游戏客户端扫描 QR 码完成登录
-6. 扫码成功后，容器继续 headless 运行，所有任务在后台静默执行
+5. 你用手机 **崩坏：星穹铁道** 客户端扫描 QR 码完成登录
+6. 扫码成功后，容器继续 headless 运行，所有星铁任务在后台静默执行
 
 > QR 码有效期内未扫码？M7A 会自动刷新过期二维码，重新生成到 `qrcode_login.png`。
 

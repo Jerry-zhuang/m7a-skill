@@ -1,6 +1,6 @@
 ---
 name: m7a
-description: 三月七小助手 (March7thAssistant) — 崩坏：星穹铁道 Docker 多账号自动化部署。支持日常实训、清体力、奖励领取、模拟宇宙、锄大地等全部功能。通过自然语言或斜杠命令触发任务执行和账号管理。m7a, 三月七, 星铁, star rail, daily, 清体力, 日常, 宇宙, 锄大地
+description: 崩坏：星穹铁道 三月七小助手 (March7thAssistant / Honkai: Star Rail) — Docker 多账号自动化部署。全自动完成日常实训、清体力、模拟宇宙、锄大地、混沌回忆、虚构叙事、末日幻影等星铁全部玩法。支持 OpenClaw / Hermes / opencode / Claude Code 以自然语言触发。m7a, 三月七, 星铁, 星穹铁道, 崩坏, star rail, hsr, daily, 清体力, 日常, 宇宙, 锄大地
 homepage: https://github.com/Jerry-zhuang/m7a-skill
 version: 1.0.0
 author: m7a-skill
@@ -15,7 +15,7 @@ metadata:
       },
     "hermes":
       {
-        "tags": ["gaming", "automation", "docker"],
+        "tags": ["gaming", "automation", "docker", "honkai-star-rail", "hoyoverse"],
         "category": "gaming",
         "homepage": "https://github.com/Jerry-zhuang/m7a-skill",
       },
