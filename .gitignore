@@ -1,4 +1,4 @@
-# M7A Skill - Runtime data (git ignore)
+# M7A Skill - .gitignore
 
 # Account-specific runtime data
 m7a-data/accounts/*/logs/
@@ -9,6 +9,13 @@ m7a-data/accounts/*/config.yaml
 logs/
 *.log
 
+# Internal tooling
+.sisyphus/
+
+# Dependencies
+node_modules/
+.opencode/
+
 # Python
 __pycache__/
 .venv/
@@ -16,3 +23,12 @@ venv/
 
 # macOS
 .DS_Store
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
